@@ -70,17 +70,27 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
             obj.put("forms", JSONObject(request.forms))
         }
         if (request.json != null) {
-            if (request.json.startsWith("[")) {
-                val array = JSONObject()
-                array.put("it", JSONArray(request.json))
-                obj.put("json", array)
-            } else {
-                obj.put("json", JSONObject(request.json))
-            }
+            obj.put("json", parse(request.json))
         }
         obj.put("unique", request.unique)
-        obj.put("response", response)
+        obj.put("response", parse(response))
         loadExtra(obj, request.extraLog)
+    }
+
+    private fun parse(str: String): JSONObject {
+        return when {
+            str.startsWith("{") -> JSONObject(str)
+            str.startsWith("[") -> {
+                JSONObject().apply {
+                    put("it", JSONArray(str))
+                }
+            }
+            else -> {
+                JSONObject().apply {
+                    put("it", str)
+                }
+            }
+        }
     }
 
     @Throws(JSONException::class)
