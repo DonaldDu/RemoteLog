@@ -1,5 +1,8 @@
-package com.dhy.remotelog
+package com.example.remotelog
 
+import com.dhy.remotelog.AppendRequestKeyInterceptor
+import com.dhy.remotelog.LogInterceptor
+import com.dhy.remotelog.RemoteLog
 import io.reactivex.Single
 import okhttp3.OkHttpClient
 import org.junit.Before
@@ -18,8 +21,8 @@ class RemoteLogWriterTest {
         val writer = RemoteLog("com.wwgps.ect", true) { builder, body ->
             builder.header("Content-Type", "application/json")
             builder.url("https://api.leancloud.cn/1.1/classes/XLog2")
-            builder.header("X-LC-Id", "EPEKEOSj0jor30zrX6ybm6qS-gzGzoHsz")
-            builder.header("X-LC-Key", BuildConfig.XLOG_MASTER_KEY)//Master Key
+            builder.header("X-LC-Id", BuildConfig.X_LC_ID)
+            builder.header("X-LC-Key", BuildConfig.X_LC_KEY)
             builder.post(body)
         }
         writer.enqueue = false
@@ -30,7 +33,7 @@ class RemoteLogWriterTest {
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .baseUrl("http://test3.wwvas.com:9999")
+            .baseUrl("http://www.demo.com")
             .client(builder.build())
             .build()
         api = retrofit.create(API::class.java)

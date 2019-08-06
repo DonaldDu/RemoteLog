@@ -11,11 +11,6 @@ android {
         versionName '0.10.1'
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        if (project.hasProperty('XLOG_MASTER_KEY')) {
-            buildConfigField "String", "XLOG_MASTER_KEY", "\"$XLOG_MASTER_KEY\""
-        } else {
-            buildConfigField "String", "XLOG_MASTER_KEY", "\"\""
-        }
     }
 
     buildTypes {
@@ -39,10 +34,12 @@ publish {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compileOnly 'com.squareup.okhttp3:okhttp:4.0.1'
-    testImplementation 'com.squareup.okhttp3:okhttp:4.0.1'
-
-    compileOnly 'com.google.code.gson:gson:2.8.5'
+    api 'com.squareup.okhttp3:okhttp:4.0.1'
+    api 'com.google.code.gson:gson:2.8.5'
+    api 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    api 'com.squareup.retrofit2:retrofit:2.5.0'
+    api 'com.squareup.retrofit2:converter-gson:2.5.0'
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -51,10 +48,11 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    testImplementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    testImplementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    testImplementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
-
     testImplementation 'org.json:json:20180813'
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (it.requested.group == 'org.jetbrains.kotlin') it.useVersion kotlin_version
+    }
 }
