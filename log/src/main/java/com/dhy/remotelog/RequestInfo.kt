@@ -70,7 +70,7 @@ class RequestInfo(request: Request) {
         if (size > 0) {
             val map = HashMap<String, String>()
             for (i in 0 until size) {
-                map[url.queryParameterName(i)] = url.queryParameterValue(i)!!
+                map[url.queryParameterName(i)] = url.queryParameterValue(i) ?: ""
             }
             return map
         }
