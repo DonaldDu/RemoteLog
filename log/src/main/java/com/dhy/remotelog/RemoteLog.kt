@@ -63,16 +63,17 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
         obj.put("server", request.server)
         obj.put("path", request.path)
 
+        val params = JSONObject()
         if (request.query != null) {
-            obj.put("query", JSONObject(request.query))
+            params.put("query", JSONObject(request.query))
         }
         if (request.forms != null) {
-            obj.put("forms", JSONObject(request.forms))
+            params.put("forms", JSONObject(request.forms))
         }
         if (request.json != null) {
-            obj.put("json", parse(request.json))
+            params.put("json", parse(request.json))
         }
-        obj.put("unique", request.unique)
+        obj.put("params", params)
         obj.put("response", parse(response))
         loadExtra(obj, request.extraLog)
     }
