@@ -52,11 +52,14 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
         }
     }
 
+    private val HEADER_CMD = "cmd"
     @Throws(JSONException::class)
     private fun initData(obj: JSONObject, request: RequestInfo, response: String) {
         obj.put("user", user)
         obj.put("appId", appId)
         if (request.headers != null) {
+            val cmd = request.headers.remove(HEADER_CMD)
+            if (cmd != null) obj.put(HEADER_CMD, cmd)
             obj.put("headers", JSONObject(request.headers))
         }
         obj.put("method", request.method)

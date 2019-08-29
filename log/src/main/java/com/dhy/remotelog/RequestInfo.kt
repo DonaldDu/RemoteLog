@@ -17,7 +17,7 @@ class RequestInfo(request: Request) {
     val server: String
     val path: String
 
-    val headers: Map<String, String>?
+    val headers: MutableMap<String, String>?
     val query: Map<String, String>?
     val forms: Map<String, String>?
     val json: String?
@@ -52,7 +52,7 @@ class RequestInfo(request: Request) {
         return if (tag is IExtraLog) tag else null
     }
 
-    private fun initHeaders(request: Request): Map<String, String>? {
+    private fun initHeaders(request: Request): MutableMap<String, String>? {
         val headers = request.headers
         val size = headers.size
         if (size > 0) {
