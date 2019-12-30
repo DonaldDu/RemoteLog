@@ -1,5 +1,6 @@
 package com.dhy.remotelog
 
+import com.dhy.remotelog.RemoteLog.Companion.HEADER_CMD
 import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -26,7 +27,7 @@ class RequestInfo(request: Request) {
      * the key of request create with all parameters's MD5
      */
     val unique: String
-
+    val cmd: String?
     private val UTF_8 = Charset.forName("UTF-8")
 
     init {
@@ -39,6 +40,7 @@ class RequestInfo(request: Request) {
         this.forms = initForms(request)
         this.json = initJson(request)
         this.unique = initUnique()
+        this.cmd = request.header(HEADER_CMD)
         this.extraLog = initIExtraLog(request)
     }
 

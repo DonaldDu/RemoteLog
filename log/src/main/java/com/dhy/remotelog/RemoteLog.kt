@@ -1,5 +1,6 @@
 package com.dhy.remotelog
 
+import com.dhy.remotelog.RemoteLog.Companion.URL_XLOG
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -11,6 +12,8 @@ import java.io.IOException
 open class RemoteLog(private val appId: String, private val debug: Boolean, private val initRequest: (Request.Builder, RequestBody) -> Unit) : ILogDataWriter {
     companion object {
         var user: String = ""
+        internal const val HEADER_CMD = "cmd"
+        internal const val URL_XLOG = "https://api.leancloud.cn/1.1/classes/XLog"
     }
 
     var enqueue: Boolean = true
@@ -52,7 +55,6 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
         }
     }
 
-    private val HEADER_CMD = "cmd"
     @Throws(JSONException::class)
     private fun initData(obj: JSONObject, request: RequestInfo, response: String) {
         obj.put("user", user)
@@ -62,6 +64,7 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
             if (cmd != null) obj.put(HEADER_CMD, cmd)
             obj.put("headers", JSONObject(request.headers))
         }
+        obj.put("unique", request.unique)
         obj.put("method", request.method)
         obj.put("server", request.server)
         obj.put("path", request.path)
@@ -117,4 +120,16 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
             }
         }
     }
+}
+
+fun OkHttpClient.Builder.initRemoteLog(appId: String, X_LC_ID: String, X_LC_KEY: String, userCache: (Request) -> Boolean) {
+    val logWriter = RemoteLog(appId, false) { qb, body ->
+        qb.url(URL_XLOG)
+        qb.header("Content-Type", "application/json")
+        qb.header("X-LC-Id", X_LC_ID)
+        qb.header("X-LC-Key", X_LC_KEY)
+        qb.post(body)
+    }
+    addInterceptor(LogInterceptor(logWriter))
+    addInterceptor(NetCacheInterceptor(userCache, appId, X_LC_ID, X_LC_KEY))
 }

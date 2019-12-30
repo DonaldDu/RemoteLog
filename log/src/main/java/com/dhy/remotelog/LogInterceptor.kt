@@ -6,17 +6,22 @@ import okhttp3.Response
 import java.io.IOException
 
 class LogInterceptor(private val writer: ILogDataWriter) : Interceptor {
+    companion object {
+        const val HEADER_IGNORE_LOG = "HEADER_IGNORE_LOG"
+    }
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
         val requestInfo = RequestInfo(request)
-        request = request.newBuilder().tag(requestInfo).build()
+        request = request.newBuilder()
+            .tag(RequestInfo::class.java, requestInfo)
+            .build()
         val time = System.currentTimeMillis()
         try {
             val response = chain.proceed(request)
             val cost = System.currentTimeMillis() - time
-            writer.write(requestInfo, copyResponse(response), response.code, cost)
+            if (response.shouldLog()) writer.write(requestInfo, copyResponse(response), response.code, cost)
             return response
         } catch (e: Exception) {
             val cost = System.currentTimeMillis() - time
@@ -25,7 +30,11 @@ class LogInterceptor(private val writer: ILogDataWriter) : Interceptor {
         }
     }
 
-    private val contentLength = (128 * 1024).toLong() //128kb
+    private fun Response.shouldLog(): Boolean {
+        return request.header(HEADER_IGNORE_LOG) == null
+    }
+
+    private val contentLength: Long = 1024 * 1024  //1MB
     @Throws(IOException::class)
     private fun copyResponse(response: Response): String {
         val data: String
@@ -36,4 +45,14 @@ class LogInterceptor(private val writer: ILogDataWriter) : Interceptor {
         } else data = "{}"
         return data
     }
+}
+
+fun Response.copyResponse(): String? {
+    val data: String?
+    if (body != null) {
+        val responseBody = peekBody(1024 * 1024)
+        data = responseBody.string()
+        responseBody.close()
+    } else data = null
+    return data
 }
