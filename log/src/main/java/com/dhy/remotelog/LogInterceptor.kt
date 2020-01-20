@@ -21,7 +21,7 @@ class LogInterceptor(private val writer: ILogDataWriter) : Interceptor {
         try {
             val response = chain.proceed(request)
             val cost = System.currentTimeMillis() - time
-            if (response.shouldLog()) writer.write(requestInfo, copyResponse(response), response.code, cost)
+            if (response.shouldLog()) writer.write(requestInfo, copyResponse(response), response.code(), cost)
             return response
         } catch (e: Exception) {
             val cost = System.currentTimeMillis() - time
@@ -31,14 +31,14 @@ class LogInterceptor(private val writer: ILogDataWriter) : Interceptor {
     }
 
     private fun Response.shouldLog(): Boolean {
-        return request.header(HEADER_IGNORE_LOG) == null
+        return request().header(HEADER_IGNORE_LOG) == null
     }
 
     private val contentLength: Long = 1024 * 1024  //1MB
     @Throws(IOException::class)
     private fun copyResponse(response: Response): String {
         val data: String
-        if (response.body != null) {
+        if (response.body() != null) {
             val responseBody = response.peekBody(contentLength)
             data = responseBody.string()
             responseBody.close()
@@ -49,7 +49,7 @@ class LogInterceptor(private val writer: ILogDataWriter) : Interceptor {
 
 fun Response.copyResponse(): String? {
     val data: String?
-    if (body != null) {
+    if (body() != null) {
         val responseBody = peekBody(1024 * 1024)
         data = responseBody.string()
         responseBody.close()
