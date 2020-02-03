@@ -107,7 +107,8 @@ class RequestInfo(request: Request) {
         if (size > 0) {
             val forms = HashMap<String, String>()
             for (i in 0 until size) {
-                forms[formBody.name(i)] = formBody.value(i)
+                val name = formBody.name(i)
+                forms[name] = if (name.contains("file")) name else formBody.value(i)
             }
             return forms
         }
