@@ -2,8 +2,6 @@ package com.dhy.remotelog
 
 import com.dhy.remotelog.RemoteLog.Companion.URL_XLOG
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -113,7 +111,7 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
     @Throws(IOException::class)
     protected open fun onGetResponse(response: Response) {
         if (debug) {
-            val body = response.body
+            val body = response.body()
             if (body != null) {
                 println(body.string())
                 body.close()

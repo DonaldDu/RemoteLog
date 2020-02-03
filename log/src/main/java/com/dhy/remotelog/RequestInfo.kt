@@ -3,9 +3,7 @@ package com.dhy.remotelog
 import com.dhy.remotelog.RemoteLog.Companion.HEADER_CMD
 import com.google.gson.Gson
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okio.Buffer
-import okio.ByteString.Companion.encodeUtf8
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.*
@@ -31,10 +29,10 @@ class RequestInfo(request: Request) {
     private val UTF_8 = Charset.forName("UTF-8")
 
     init {
-        val url = request.url
-        this.method = request.method
+        val url = request.url()
+        this.method = request.method()
         this.server = initServer(url)
-        this.path = url.encodedPath
+        this.path = url.encodedPath()
         this.headers = initHeaders(request)
         this.query = initQuery(url)
         this.forms = initForms(request)
@@ -45,7 +43,7 @@ class RequestInfo(request: Request) {
     }
 
     fun appendRequestKey(request: Request): Request {
-        val url = request.url.newBuilder().addQueryParameter("unique", unique).build()
+        val url = request.url().newBuilder().addQueryParameter("unique", unique).build()
         return request.newBuilder().url(url).build()
     }
 
@@ -55,8 +53,8 @@ class RequestInfo(request: Request) {
     }
 
     private fun initHeaders(request: Request): MutableMap<String, String>? {
-        val headers = request.headers
-        val size = headers.size
+        val headers = request.headers()
+        val size = headers.size()
         if (size > 0) {
             val map = HashMap<String, String>()
             for (i in 0 until size) {
@@ -68,7 +66,7 @@ class RequestInfo(request: Request) {
     }
 
     private fun initQuery(url: HttpUrl): Map<String, String>? {
-        val size = url.querySize
+        val size = url.querySize()
         if (size > 0) {
             val map = HashMap<String, String>()
             for (i in 0 until size) {
@@ -84,16 +82,16 @@ class RequestInfo(request: Request) {
         var port = ""
         if (url.isHttps) {
             head = "https://"
-            if (url.port != 443) port = ":" + url.port
+            if (url.port() != 443) port = ":" + url.port()
         } else {
             head = "http://"
-            if (url.port != 80) port = ":" + url.port
+            if (url.port() != 80) port = ":" + url.port()
         }
-        return head + url.host + port
+        return head + url.host() + port
     }
 
     private fun initForms(request: Request): Map<String, String>? {
-        val body = request.body
+        val body = request.body()
         if (body is FormBody) {
             return initFromsFromFormBody((body as FormBody?)!!)
         } else if (body is MultipartBody) {
@@ -103,7 +101,7 @@ class RequestInfo(request: Request) {
     }
 
     private fun initFromsFromFormBody(formBody: FormBody): Map<String, String>? {
-        val size = formBody.size
+        val size = formBody.size()
         if (size > 0) {
             val forms = HashMap<String, String>()
             for (i in 0 until size) {
@@ -116,20 +114,20 @@ class RequestInfo(request: Request) {
     }
 
     private fun initFromsFromMultipartBody(multipartBody: MultipartBody): Map<String, String> {
-        val size = multipartBody.size
+        val size = multipartBody.size()
         val CONTENT_DISPOSITION = "Content-Disposition"
         var name: String
         var value: String
         val forms = HashMap<String, String>()
         for (i in 0 until size) {
             val part = multipartBody.part(i)
-            val cd = part.headers!![CONTENT_DISPOSITION]
+            val cd = part.headers()!![CONTENT_DISPOSITION]
             val start = "form-data; name=".length
             var end = cd!!.indexOf(";", start)
             if (end == -1) end = cd.length
             name = cd.substring(start + 1, end - 1)
 
-            val body = part.body
+            val body = part.body()
             value = if (FILE_MEDIA_TYPES.contains(body.contentType())) {
                 "MEDIA_TYPE_FILE"
             } else {
@@ -153,7 +151,7 @@ class RequestInfo(request: Request) {
     }
 
     private fun initJson(request: Request): String? {
-        val body = request.body
+        val body = request.body()
         if (body != null) {
             val mediaType = body.contentType()
             if (JSON_MEDIA_TYPES.contains(mediaType)) {
@@ -190,7 +188,7 @@ class RequestInfo(request: Request) {
         }
 
         fun isNotGet(request: Request): Boolean {
-            return request.method != "GET"
+            return request.method() != "GET"
         }
     }
 }
