@@ -16,22 +16,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "X_LC_ID", "\"\""
-            buildConfigField "String", "X_LC_KEY", "\"\""
         }
         debug {
-            if (project.hasProperty('XLOG_MASTER_KEY')) {
-                buildConfigField "String", "X_LC_ID", "\"$XLOG_APP_ID\""
-                buildConfigField "String", "X_LC_KEY", "\"$XLOG_MASTER_KEY\""
-            } else {
-                buildConfigField "String", "X_LC_ID", "\"\""
-                buildConfigField "String", "X_LC_KEY", "\"\""
-            }
+            resValue "string", "X_LC_ID", "${findProperty('X_LC_ID')}"
+            resValue "string", "X_LC_KEY", "${findProperty('X_LC_KEY0')}"
         }
     }
     compileOptions {
-        sourceCompatibility = 1.7
-        targetCompatibility = 1.7
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 
@@ -39,20 +32,21 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
     implementation project(path: ':log')
 }
 configurations.all {
     resolutionStrategy.eachDependency {
         def requested = it.requested
         if (requested.group == 'com.squareup.okhttp3' && requested.name == 'okhttp') {
-            it.useVersion '4.2.2'
+            it.useVersion '4.4.1'
         }
     }
 }
+String.metaClass.quote << { "\"$delegate\"" }

@@ -1,5 +1,6 @@
 package com.dhy.remotelog
 
+import android.content.Context
 import com.dhy.remotelog.RemoteLog.Companion.URL_XLOG
 import okhttp3.*
 import org.json.JSONArray
@@ -120,7 +121,11 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
     }
 }
 
-fun OkHttpClient.Builder.initRemoteLog(appId: String, X_LC_ID: String, X_LC_KEY: String, userCache: (Request) -> Boolean) {
+fun OkHttpClient.Builder.initRemoteLog(context: Context, userCache: ((Request) -> Boolean)? = null) {
+    val appId = context.applicationInfo.packageName
+    val X_LC_ID = context.getString(R.string.X_LC_ID)
+    val X_LC_KEY = context.getString(R.string.X_LC_KEY)
+    if (X_LC_ID.isInvalidResValue() || X_LC_KEY.isInvalidResValue()) return
     val logWriter = RemoteLog(appId, false) { qb, body ->
         qb.url(URL_XLOG)
         qb.header("Content-Type", "application/json")
@@ -129,5 +134,9 @@ fun OkHttpClient.Builder.initRemoteLog(appId: String, X_LC_ID: String, X_LC_KEY:
         qb.post(body)
     }
     addInterceptor(LogInterceptor(logWriter))
-    addInterceptor(NetCacheInterceptor(userCache, appId, X_LC_ID, X_LC_KEY))
+    if (userCache != null) addInterceptor(NetCacheInterceptor(userCache, appId, X_LC_ID, X_LC_KEY))
+}
+
+private fun String.isInvalidResValue(): Boolean {
+    return this.isEmpty() || this == "null";
 }

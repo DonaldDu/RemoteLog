@@ -1,6 +1,5 @@
 package com.example.remotelog
 
-import com.dhy.remotelog.AppendRequestKeyInterceptor
 import com.dhy.remotelog.LogInterceptor
 import com.dhy.remotelog.RemoteLog
 import io.reactivex.Single
@@ -28,7 +27,6 @@ class RemoteLogWriterTest {
         writer.enqueue = false
         val builder = OkHttpClient().newBuilder()
             .addInterceptor(LogInterceptor(writer))
-            .addInterceptor(AppendRequestKeyInterceptor())
 
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())

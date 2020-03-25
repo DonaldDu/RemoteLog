@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         val client = OkHttpClient.Builder()
             .apply {
                 if (BuildConfig.DEBUG) {
-                    initRemoteLog(BuildConfig.APPLICATION_ID, BuildConfig.X_LC_ID, BuildConfig.X_LC_KEY) {
+                    initRemoteLog(this@MainActivity) {
                         useBuffer.isChecked
                     }
                 }
