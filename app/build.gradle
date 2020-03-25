@@ -19,7 +19,7 @@ android {
         }
         debug {
             resValue "string", "X_LC_ID", "${findProperty('X_LC_ID')}"
-            resValue "string", "X_LC_KEY", "${findProperty('X_LC_KEY0')}"
+            resValue "string", "X_LC_KEY", "${findProperty('X_LC_KEY')}"
         }
     }
     compileOptions {
