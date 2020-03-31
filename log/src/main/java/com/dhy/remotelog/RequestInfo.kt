@@ -10,6 +10,7 @@ import java.util.*
 
 class RequestInfo(request: Request) {
     val method: String
+
     /**
      * host&port
      */
@@ -21,6 +22,7 @@ class RequestInfo(request: Request) {
     val forms: Map<String, String>?
     val json: String?
     val extraLog: IExtraLog?
+
     /**
      * the key of request create with all parameters's MD5
      */
@@ -106,7 +108,7 @@ class RequestInfo(request: Request) {
             val forms = HashMap<String, String>()
             for (i in 0 until size) {
                 val name = formBody.name(i)
-                forms[name] = if (name.contains("file")) name else formBody.value(i)
+                forms[name] = if (name.contains("file")) "MEDIA_TYPE_FILE" else formBody.value(i)
             }
             return forms
         }
@@ -128,7 +130,7 @@ class RequestInfo(request: Request) {
             name = cd.substring(start + 1, end - 1)
 
             val body = part.body()
-            value = if (FILE_MEDIA_TYPES.contains(body.contentType())) {
+            value = if (name.contains("file")) {
                 "MEDIA_TYPE_FILE"
             } else {
                 readRequestBody(body)
@@ -173,18 +175,14 @@ class RequestInfo(request: Request) {
     companion object {
         @Transient
         private val gson = Gson()
+
         @Transient
         private val JSON_MEDIA_TYPES: MutableList<MediaType>
-        @Transient
-        private val FILE_MEDIA_TYPES: MutableList<MediaType>
 
         init {
             JSON_MEDIA_TYPES = ArrayList()
             JSON_MEDIA_TYPES.add("application/json; charset=UTF-8".toMediaTypeOrNull()!!)
             JSON_MEDIA_TYPES.add("application/json; charset=utf-8".toMediaTypeOrNull()!!)
-
-            FILE_MEDIA_TYPES = ArrayList()
-            FILE_MEDIA_TYPES.add("application/octet-stream".toMediaTypeOrNull()!!)
         }
 
         fun isNotGet(request: Request): Boolean {
