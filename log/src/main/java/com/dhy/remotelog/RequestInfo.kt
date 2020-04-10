@@ -1,9 +1,10 @@
 package com.dhy.remotelog
 
-import com.dhy.remotelog.RemoteLog.Companion.HEADER_CMD
 import com.google.gson.Gson
 import okhttp3.*
 import okio.Buffer
+import retrofit2.Invocation
+import retrofit2.http.*
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.*
@@ -40,13 +41,24 @@ class RequestInfo(request: Request) {
         this.forms = initForms(request)
         this.json = initJson(request)
         this.unique = initUnique()
-        this.cmd = request.header(HEADER_CMD)
+        this.cmd = request.getCmd()
         this.extraLog = initIExtraLog(request)
     }
 
-    fun appendRequestKey(request: Request): Request {
-        val url = request.url().newBuilder().addQueryParameter("unique", unique).build()
-        return request.newBuilder().url(url).build()
+    private fun Request.getCmd(): String {
+        val invocation = tag(Invocation::class.java)!!
+        val m = invocation.method()
+        val get = m.getAnnotation(GET::class.java)
+        if (get != null) return get.value
+        val post = m.getAnnotation(POST::class.java)
+        if (post != null) return post.value
+        val put = m.getAnnotation(PUT::class.java)
+        if (put != null) return put.value
+        val delete = m.getAnnotation(DELETE::class.java)
+        if (delete != null) return delete.value
+        val patch = m.getAnnotation(PATCH::class.java)
+        if (patch != null) return patch.value
+        throw IllegalArgumentException("unsupport http Method for cmd")
     }
 
     private fun initIExtraLog(request: Request): IExtraLog? {

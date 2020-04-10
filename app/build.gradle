@@ -11,6 +11,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "X_LC_ID", "\"${findProperty('X_LC_ID')}\""//for test only
+        buildConfigField "String", "X_LC_KEY", "\"${findProperty('X_LC_KEY')}\""//for test only
     }
     buildTypes {
         release {

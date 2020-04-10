@@ -11,7 +11,6 @@ import java.io.IOException
 open class RemoteLog(private val appId: String, private val debug: Boolean, private val initRequest: (Request.Builder, RequestBody) -> Unit) : ILogDataWriter {
     companion object {
         var user: String = ""
-        internal const val HEADER_CMD = "cmd"
         internal const val URL_XLOG = "https://api.leancloud.cn/1.1/classes/XLog"
     }
 
@@ -59,10 +58,9 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
         obj.put("user", user)
         obj.put("appId", appId)
         if (request.headers != null) {
-            val cmd = request.headers.remove(HEADER_CMD)
-            if (cmd != null) obj.put(HEADER_CMD, cmd)
             obj.put("headers", JSONObject(request.headers))
         }
+        obj.put("cmd", request.cmd)
         obj.put("unique", request.unique)
         obj.put("method", request.method)
         obj.put("server", request.server)
