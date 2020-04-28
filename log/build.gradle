@@ -2,13 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
-        versionName '1.0.1'
+        versionName '1.0.2'
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -37,9 +37,9 @@ dependencies {
     api 'com.squareup.okhttp3:okhttp:3.14.6'
     api 'com.google.code.gson:gson:2.8.6'
     api 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    api 'com.squareup.retrofit2:retrofit:2.7.2'
-    api 'com.squareup.retrofit2:converter-gson:2.7.2'
-    api 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
+    api 'com.squareup.retrofit2:retrofit:2.8.1'
+    api 'com.squareup.retrofit2:converter-gson:2.8.1'
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
 
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

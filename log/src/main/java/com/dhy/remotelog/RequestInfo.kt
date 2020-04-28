@@ -4,6 +4,7 @@ import com.dhy.remotelog.RemoteLog.Companion.HEADER_CMD
 import com.google.gson.Gson
 import okhttp3.*
 import okio.Buffer
+import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.*
@@ -18,9 +19,9 @@ class RequestInfo(request: Request) {
     val path: String
 
     val headers: MutableMap<String, String>?
-    val query: Map<String, String>?
-    val forms: Map<String, String>?
-    val json: String?
+    private val query: Map<String, String>?
+    private val forms: Map<String, String>?
+    private val json: String?
     val extraLog: IExtraLog?
 
     /**
@@ -28,6 +29,11 @@ class RequestInfo(request: Request) {
      */
     val unique: String
     val cmd: String?
+
+    /**
+     * include query and body params
+     * */
+    val params = JSONObject()
     private val UTF_8 = Charset.forName("UTF-8")
 
     init {
@@ -42,6 +48,16 @@ class RequestInfo(request: Request) {
         this.unique = initUnique()
         this.cmd = request.header(HEADER_CMD)
         this.extraLog = initIExtraLog(request)
+
+        if (query != null) {
+            params.put("query", query)
+        }
+        if (forms != null) {
+            params.put("forms", forms)
+        }
+        if (json != null) {
+            params.put("query", json)
+        }
     }
 
     fun appendRequestKey(request: Request): Request {

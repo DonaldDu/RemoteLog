@@ -1,13 +1,16 @@
 package com.example.remotelog
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dhy.remotelog.initRemoteLog
+import com.dhy.remotelog.requestInfo
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -42,6 +45,13 @@ class MainActivity : AppCompatActivity() {
                         useBuffer.isChecked
                     }
                 }
+                addInterceptor(object : Interceptor {
+                    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                        val req = chain.request()
+                        Log.i("requestInfo", req.url.toString() + req.requestInfo?.params.toString())
+                        return chain.proceed(req)
+                    }
+                })
             }.build()
 
         val retrofit = Retrofit.Builder()

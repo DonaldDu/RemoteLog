@@ -2,6 +2,7 @@ package com.dhy.remotelog
 
 
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 
@@ -35,6 +36,7 @@ class LogInterceptor(private val writer: ILogDataWriter) : Interceptor {
     }
 
     private val contentLength: Long = 1024 * 1024  //1MB
+
     @Throws(IOException::class)
     private fun copyResponse(response: Response): String {
         val data: String
@@ -46,6 +48,11 @@ class LogInterceptor(private val writer: ILogDataWriter) : Interceptor {
         return data
     }
 }
+
+val Request.requestInfo: RequestInfo?
+    get() {
+        return tag(RequestInfo::class.java)
+    }
 
 fun Response.copyResponse(): String? {
     val data: String?

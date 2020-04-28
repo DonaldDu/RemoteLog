@@ -61,24 +61,13 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
         if (request.headers != null) {
             val cmd = request.headers.remove(HEADER_CMD)
             if (cmd != null) obj.put(HEADER_CMD, cmd)
-            obj.put("headers", JSONObject(request.headers))
+            obj.put("headers", JSONObject(request.headers as Map<*, *>))
         }
         obj.put("unique", request.unique)
         obj.put("method", request.method)
         obj.put("server", request.server)
         obj.put("path", request.path)
-
-        val params = JSONObject()
-        if (request.query != null) {
-            params.put("query", JSONObject(request.query))
-        }
-        if (request.forms != null) {
-            params.put("forms", JSONObject(request.forms))
-        }
-        if (request.json != null) {
-            params.put("json", parse(request.json))
-        }
-        obj.put("params", params)
+        obj.put("params", request.params)
         obj.put("response", parse(response))
         loadExtra(obj, request.extraLog)
     }

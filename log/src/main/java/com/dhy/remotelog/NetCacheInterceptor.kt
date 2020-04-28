@@ -53,7 +53,7 @@ class NetCacheInterceptor(val userCache: (Request) -> Boolean, private val packa
     }
 
     private fun buildWhere(req: Request): String? {
-        val info = req.tag(RequestInfo::class.java)
+        val info = req.requestInfo
         return if (info != null) {
             val json = JSONObject()
             json.putOpt("appId", packageName)
