@@ -50,14 +50,18 @@ class RequestInfo(request: Request) {
         this.extraLog = initIExtraLog(request)
 
         if (query != null) {
-            params.put("query", query)
+            params.put("query", query.toJson())
         }
         if (forms != null) {
-            params.put("forms", forms)
+            params.put("forms", forms.toJson())
         }
         if (json != null) {
-            params.put("query", json)
+            params.put("query", JSONObject(json))
         }
+    }
+
+    private fun Map<String, String>.toJson(): JSONObject {
+        return JSONObject(this)
     }
 
     fun appendRequestKey(request: Request): Request {
