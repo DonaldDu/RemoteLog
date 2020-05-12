@@ -56,7 +56,7 @@ class RequestInfo(request: Request) {
             params.put("forms", forms.toJson())
         }
         if (json != null) {
-            params.put("query", JSONObject(json))
+            params.put("json", JSONObject(json))
         }
     }
 

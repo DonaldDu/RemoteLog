@@ -8,7 +8,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
-        versionName '1.1.4'
+        versionName '1.1.5'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resValue "string", "X_LC_ID", "${findProperty('X_LC_ID')}"
@@ -32,7 +32,7 @@ publish {
     desc = 'desc'
     website = 'website'
 }
-
+if (hasProperty('publishToNexus')) publishToNexus()
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency lower okhttp version for better compatible
