@@ -4,6 +4,7 @@ import com.dhy.remotelog.RemoteLog.Companion.HEADER_CMD
 import com.google.gson.Gson
 import okhttp3.*
 import okio.Buffer
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.Charset
@@ -56,7 +57,11 @@ class RequestInfo(request: Request) {
             params.put("forms", forms.toJson())
         }
         if (json != null) {
-            params.put("json", JSONObject(json))
+            if (json.startsWith("{")) {
+                params.put("json", JSONObject(json))
+            } else {
+                params.put("json", JSONArray(json))
+            }
         }
     }
 
