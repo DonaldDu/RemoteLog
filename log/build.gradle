@@ -6,9 +6,9 @@ android {
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
-        versionName '1.1.6'
+        versionName '1.2.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resValue "string", "X_LC_ID", "${findProperty('X_LC_ID')}"
@@ -37,12 +37,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency lower okhttp version for better compatible
     api 'com.squareup.okhttp3:okhttp:3.14.6'
+    api 'com.squareup.retrofit2:retrofit:2.9.0'
     api 'com.google.code.gson:gson:2.8.6'
-    api 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    api 'com.squareup.retrofit2:retrofit:2.8.1'
-    api 'com.squareup.retrofit2:converter-gson:2.8.1'
-    api 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
-
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
