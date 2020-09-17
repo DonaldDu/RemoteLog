@@ -2,6 +2,8 @@ package com.dhy.remotelog
 
 import android.content.Context
 import com.dhy.remotelog.RemoteLog.Companion.URL_XLOG
+import com.dhy.remotelog.room.RequestLog
+import com.dhy.remotelog.room.getDb
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -37,10 +39,10 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
             initData(obj, requestInfo, response)
             obj.put("status", httpCode)
             obj.put("costTimeMS", costTimeMS)
+            saveLocalLog(requestInfo, response, httpCode)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-
         val requestBody = obj.toString().toRequestBody(JSON_MEDIA_TYPE)
         val request = Request.Builder().apply { initRequest(this, requestBody) }.build()
         if (enqueue) {
@@ -54,15 +56,29 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
         }
     }
 
+    private fun saveLocalLog(requestInfo: RequestInfo, response: String, httpCode: Int) {
+        val log = RequestLog()
+        log.date = System.currentTimeMillis()
+        log.path = requestInfo.path
+        log.server = requestInfo.server
+        log.method = requestInfo.method
+        log.unique = requestInfo.unique
+        log.params = requestInfo.params.toString()
+        log.cmd = requestInfo.cmd
+        log.response = response
+        log.httpCode = httpCode
+        log.headers = requestInfo.headers?.toString()
+        getDb()!!.insert(log)
+    }
+
     @Throws(JSONException::class)
     private fun initData(obj: JSONObject, request: RequestInfo, response: String) {
         obj.put("user", user)
         obj.put("appId", appId)
         if (request.headers != null) {
-            val cmd = request.headers.remove(HEADER_CMD)
-            if (cmd != null) obj.put(HEADER_CMD, cmd)
-            obj.put("headers", JSONObject(request.headers as Map<*, *>))
+            obj.put("headers", request.headers)
         }
+        if (request.cmd != null) obj.put(HEADER_CMD, request.cmd)
         obj.put("unique", request.unique)
         obj.put("method", request.method)
         obj.put("server", request.server)
@@ -115,6 +131,7 @@ fun OkHttpClient.Builder.initRemoteLog(context: Context, userCache: ((Request) -
     val X_LC_ID = context.getString(R.string.X_LC_ID)
     val X_LC_KEY = context.getString(R.string.X_LC_KEY)
     if (X_LC_ID.isInvalidResValue() || X_LC_KEY.isInvalidResValue()) return
+    getDb(context)
     val logWriter = RemoteLog(appId, false) { qb, body ->
         qb.url(URL_XLOG)
         qb.header("Content-Type", "application/json")
@@ -127,5 +144,5 @@ fun OkHttpClient.Builder.initRemoteLog(context: Context, userCache: ((Request) -
 }
 
 private fun String.isInvalidResValue(): Boolean {
-    return this.isEmpty() || this == "null";
+    return this.isEmpty() || this == "null"
 }

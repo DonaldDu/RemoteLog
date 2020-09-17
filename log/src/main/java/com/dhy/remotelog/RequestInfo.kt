@@ -1,11 +1,12 @@
 package com.dhy.remotelog
 
-import com.dhy.remotelog.RemoteLog.Companion.HEADER_CMD
 import com.google.gson.Gson
 import okhttp3.*
 import okio.Buffer
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.Invocation
+import retrofit2.http.*
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.*
@@ -19,9 +20,9 @@ class RequestInfo(request: Request) {
     val server: String
     val path: String
 
-    val headers: MutableMap<String, String>?
-    private val query: Map<String, String>?
-    private val forms: Map<String, String>?
+    val headers: JSONObject?
+    private val query: JSONObject?
+    private val forms: JSONObject?
     private val json: String?
     val extraLog: IExtraLog?
 
@@ -29,7 +30,7 @@ class RequestInfo(request: Request) {
      * the key of request create with all parameters's MD5
      */
     val unique: String
-    private val cmd: String?
+    val cmd: String?
 
     /**
      * include query and body params
@@ -47,14 +48,14 @@ class RequestInfo(request: Request) {
         this.forms = initForms(request)
         this.json = initJson(request)
         this.unique = initUnique()
-        this.cmd = request.header(HEADER_CMD)
+        this.cmd = request.getCmd()
         this.extraLog = initIExtraLog(request)
 
         if (query != null) {
-            params.put("query", query.toJson())
+            params.put("query", query)
         }
         if (forms != null) {
-            params.put("forms", forms.toJson())
+            params.put("forms", forms)
         }
         if (json != null) {
             if (json.startsWith("{")) {
@@ -65,13 +66,29 @@ class RequestInfo(request: Request) {
         }
     }
 
-    private fun Map<String, String>.toJson(): JSONObject {
-        return JSONObject(this)
-    }
-
     fun appendRequestKey(request: Request): Request {
         val url = request.url().newBuilder().addQueryParameter("unique", unique).build()
         return request.newBuilder().url(url).build()
+    }
+
+    private fun Request.getCmd(): String? {
+        val invocation = tag(Invocation::class.java) ?: return null
+        val m = invocation.method()
+        val get = m.getAnnotation(GET::class.java)
+        if (get != null) return get.value
+
+        val post = m.getAnnotation(POST::class.java)
+        if (post != null) return post.value
+
+        val put = m.getAnnotation(PUT::class.java)
+        if (put != null) return put.value
+
+        val delete = m.getAnnotation(DELETE::class.java)
+        if (delete != null) return delete.value
+
+        val patch = m.getAnnotation(PATCH::class.java)
+        if (patch != null) return patch.value
+        return null
     }
 
     private fun initIExtraLog(request: Request): IExtraLog? {
@@ -79,25 +96,25 @@ class RequestInfo(request: Request) {
         return if (tag is IExtraLog) tag else null
     }
 
-    private fun initHeaders(request: Request): MutableMap<String, String>? {
+    private fun initHeaders(request: Request): JSONObject? {
         val headers = request.headers()
         val size = headers.size()
         if (size > 0) {
-            val map = HashMap<String, String>()
+            val map = JSONObject()
             for (i in 0 until size) {
-                map[headers.name(i)] = headers.value(i)
+                map.put(headers.name(i), headers.value(i))
             }
             return map
         }
         return null
     }
 
-    private fun initQuery(url: HttpUrl): Map<String, String>? {
+    private fun initQuery(url: HttpUrl): JSONObject? {
         val size = url.querySize()
         if (size > 0) {
-            val map = HashMap<String, String>()
+            val map = JSONObject()
             for (i in 0 until size) {
-                map[url.queryParameterName(i)] = url.queryParameterValue(i) ?: ""
+                map.put(url.queryParameterName(i), url.queryParameterValue(i) ?: "")
             }
             return map
         }
@@ -111,7 +128,7 @@ class RequestInfo(request: Request) {
         } else head + url.host()
     }
 
-    private fun initForms(request: Request): Map<String, String>? {
+    private fun initForms(request: Request): JSONObject? {
         val body = request.body()
         if (body is FormBody) {
             return initFromsFromFormBody((body as FormBody?)!!)
@@ -121,25 +138,26 @@ class RequestInfo(request: Request) {
         return null
     }
 
-    private fun initFromsFromFormBody(formBody: FormBody): Map<String, String>? {
+    private fun initFromsFromFormBody(formBody: FormBody): JSONObject? {
         val size = formBody.size()
         if (size > 0) {
-            val forms = HashMap<String, String>()
+            val forms = JSONObject()
             for (i in 0 until size) {
                 val name = formBody.name(i)
-                forms[name] = if (name.contains("file")) "MEDIA_TYPE_FILE" else formBody.value(i)
+                val value = if (name.contains("file")) "MEDIA_TYPE_FILE" else formBody.value(i)
+                forms.put(name, value)
             }
             return forms
         }
         return null
     }
 
-    private fun initFromsFromMultipartBody(multipartBody: MultipartBody): Map<String, String> {
+    private fun initFromsFromMultipartBody(multipartBody: MultipartBody): JSONObject {
         val size = multipartBody.size()
         val CONTENT_DISPOSITION = "Content-Disposition"
         var name: String
         var value: String
-        val forms = HashMap<String, String>()
+        val forms = JSONObject()
         for (i in 0 until size) {
             val part = multipartBody.part(i)
             val cd = part.headers()!![CONTENT_DISPOSITION]
@@ -154,7 +172,7 @@ class RequestInfo(request: Request) {
             } else {
                 readRequestBody(body)
             }
-            forms[name] = value
+            forms.put(name, value)
         }
         return forms
     }

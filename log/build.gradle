@@ -1,7 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 android {
+    buildToolsVersion '29.0.3'
     compileSdkVersion 29
 
     defaultConfig {
@@ -21,8 +23,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
-
+androidExtensions { experimental = true }
 apply plugin: 'com.novoda.bintray-release'
 publish {
     userOrg = 'user'
@@ -39,18 +45,22 @@ dependencies {
     api 'com.squareup.okhttp3:okhttp:3.14.6'
     api 'com.squareup.retrofit2:retrofit:2.9.0'
     api 'com.google.code.gson:gson:2.8.6'
+    implementation "com.github.DonaldDu:XIntent:1.5.3"
+    implementation 'com.github.DonaldDu:AdapterX:2.0.1'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     testImplementation 'junit:junit:4.13'
-    testImplementation 'org.json:json:20190722'
-}
+    testImplementation 'org.json:json:20200518'
 
-configurations.all {
-    resolutionStrategy.eachDependency {
-        if (it.requested.group == 'org.jetbrains.kotlin') it.useVersion kotlin_version
-    }
+    kapt 'androidx.room:room-compiler:2.2.5'
+    implementation 'androidx.room:room-runtime:2.2.5'
+    implementation 'com.yuyh.json:jsonviewer:1.0.6'
+    implementation "androidx.paging:paging-runtime:2.1.2"
 }

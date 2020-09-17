@@ -1,9 +1,11 @@
 package com.example.remotelog
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.dhy.remotelog.NetLogActivity
 import com.dhy.remotelog.RemoteLog
 import com.dhy.remotelog.initRemoteLog
 import com.dhy.remotelog.requestInfo
@@ -35,6 +37,9 @@ class MainActivity : AppCompatActivity() {
                 }, {
                     Toast.makeText(this, "response error " + it.message, Toast.LENGTH_LONG).show()
                 })
+        }
+        btShowLog.setOnClickListener {
+            startActivity(Intent(this, NetLogActivity::class.java))
         }
     }
 
