@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.dhy.remotelog.RemoteLog
 import com.dhy.remotelog.initRemoteLog
 import com.dhy.remotelog.requestInfo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        RemoteLog.user = "10086"
         val client = OkHttpClient.Builder()
             .apply {
                 if (BuildConfig.DEBUG) {

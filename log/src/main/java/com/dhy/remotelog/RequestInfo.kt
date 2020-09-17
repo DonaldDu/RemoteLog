@@ -29,7 +29,7 @@ class RequestInfo(request: Request) {
      * the key of request create with all parameters's MD5
      */
     val unique: String
-    val cmd: String?
+    private val cmd: String?
 
     /**
      * include query and body params
@@ -105,16 +105,10 @@ class RequestInfo(request: Request) {
     }
 
     private fun initServer(url: HttpUrl): String {
-        val head: String
-        var port = ""
-        if (url.isHttps) {
-            head = "https://"
-            if (url.port() != 443) port = ":" + url.port()
-        } else {
-            head = "http://"
-            if (url.port() != 80) port = ":" + url.port()
-        }
-        return head + url.host() + port
+        val head: String = url.scheme() + "://"
+        return if (url.port() != HttpUrl.defaultPort(url.scheme())) {
+            head + url.host() + ":" + url.port()
+        } else head + url.host()
     }
 
     private fun initForms(request: Request): Map<String, String>? {
