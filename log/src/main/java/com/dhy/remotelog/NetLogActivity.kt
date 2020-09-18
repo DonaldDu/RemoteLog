@@ -37,7 +37,6 @@ class NetLogActivity : AppCompatActivity() {
         pageAdapter.setOnItemClickListener {
             showDetail(it.data)
         }
-
     }
 
     private fun showDetail(log: RequestLog) {
