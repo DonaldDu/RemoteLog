@@ -22,7 +22,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 class MainActivity : AppCompatActivity() {
-    lateinit var api: APIs
+    private lateinit var api: APIs
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
