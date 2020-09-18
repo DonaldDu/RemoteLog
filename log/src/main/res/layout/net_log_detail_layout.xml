@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/white_bg_with_corner_netlog"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Date %s"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:text="Date 2020/09/17 16:04:22" />
+
+    <TextView
+        android:id="@+id/tvHttpCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/tvDate"
+        android:contentDescription="HttpCode %d"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:text="HttpCode 404" />
+
+    <TextView
+        android:id="@+id/tvPath"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvDate"
+        android:contentDescription="Path: %s"
+        android:text="Path: /api/carloan/000000000000000000000000000000000000000projProjectInfo/projectList" />
+
+    <TextView
+        android:id="@+id/tvParams"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvPath"
+        android:contentDescription="Params: %s"
+        android:text="Params: 54465645" />
+
+    <com.yuyh.jsonviewer.library.JsonRecyclerView
+        android:id="@+id/jsonParams"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvParams"
+        android:contentDescription="Params: %s"
+        android:text="Params: 54465645" />
+
+    <TextView
+        android:id="@+id/tvResponse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Response" />
+
+    <com.yuyh.jsonviewer.library.JsonRecyclerView
+        android:id="@+id/jsonResponse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvParams" />
+</RelativeLayout>
