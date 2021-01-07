@@ -1,6 +1,27 @@
 buildscript {
-    ext.kotlin_version = findProperty('kotlin_version') ?: '1.4.10'
+    ext.kotlin_version = findProperty('kotlin_version') ?: '1.4.21'
     ext.doraemonkitV = '3.2.0'
+
+    ext.publishToNexusGAV = { g, a, v ->
+        apply plugin: 'maven-publish'
+        afterEvaluate {
+            publishing {
+                publications {
+                    maven(MavenPublication) {
+                        if (project.plugins.hasPlugin('com.android.library')) {
+                            from components.release
+                        } else if (project.plugins.hasPlugin('java-library')) {
+                            from components.java
+                        }
+                        groupId = g
+                        artifactId = a
+                        version = v
+                    }
+                }
+            }
+        }
+    }
+
     repositories {
         google()
         jcenter()
