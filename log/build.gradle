@@ -29,7 +29,16 @@ android {
     }
 }
 androidExtensions { experimental = true }
-publishToNexusGAV('com.github.DonaldDu', 'RemoteLog', android.defaultConfig.versionName)
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    userOrg = 'user'
+    groupId = 'com.github.DonaldDu'
+    artifactId = 'RemoteLog'
+    publishVersion = android.defaultConfig.versionName
+    desc = 'desc'
+    website = 'website'
+}
+if (hasProperty('publishToNexus')) publishToNexus()
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency lower okhttp version for better compatible
