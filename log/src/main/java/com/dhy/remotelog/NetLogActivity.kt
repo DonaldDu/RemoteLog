@@ -15,7 +15,7 @@ import com.dhy.remotelog.room.getDb
 import com.dhy.xintent.formatText
 import com.dhy.xintent.toast
 import com.yuyh.jsonviewer.library.JsonRecyclerView
-import kotlinx.android.synthetic.main.activity_net_log.*
+import kotlinx.android.synthetic.main.net_log_activity.*
 import kotlinx.android.synthetic.main.net_log_item_layout.*
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -24,7 +24,7 @@ class NetLogActivity : AppCompatActivity() {
     private val db by lazy { getDb(this)!! }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_net_log)
+        setContentView(R.layout.net_log_activity)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val pagedListConfig = PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(10).setInitialLoadSizeHint(20).build()
@@ -48,7 +48,11 @@ class NetLogActivity : AppCompatActivity() {
         json.put("server", log.server)
         if (log.headers != null) json.put("headers", JSONObject(log.headers))
         if (log.params != null) json.put("params", JSONObject(log.params))
-        if (log.response != null) json.put("response", JSONObject(log.response))
+        if (log.response != null) try {
+            json.put("response", JSONObject(log.response))
+        } catch (e: Exception) {
+            json.put("response", log.response)
+        }
         v.bindJson(json)
         AlertDialog.Builder(this)
             .setView(v)
