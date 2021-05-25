@@ -1,5 +1,7 @@
 buildscript {
     ext {
+
+        kotlin_version = '1.5.0'
         ext.kotlin_version = '1.5.0'
     }
     ext.doraemonkitV = '3.2.0'
@@ -29,3 +31,5 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 String.metaClass.quote << { "\"$delegate\"" }
+
+apply from: "https://gitee.com/DonaldDu/OpenGradleScript/raw/master/mavenPublish.gradle"

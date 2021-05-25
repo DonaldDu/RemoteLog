@@ -1,4 +1,4 @@
-package com.dhy.remotelog
+package com.dhy.remotelog.host
 
 import com.google.gson.Gson
 import okhttp3.*
@@ -107,7 +107,6 @@ class RequestInfo(request: Request) {
             for (i in 0 until size) {
                 map.put(headers.name(i), headers.value(i))
             }
-            if (user != null) map.remove(head_user)
             return map
         }
         return null

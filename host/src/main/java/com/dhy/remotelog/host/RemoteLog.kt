@@ -1,9 +1,7 @@
-package com.dhy.remotelog
+package com.dhy.remotelog.host
 
 import android.content.Context
-import com.dhy.remotelog.RemoteLog.Companion.URL_XLOG
-import com.dhy.remotelog.room.RequestLog
-import com.dhy.remotelog.room.getDb
+import com.dhy.remotelog.host.RemoteLog.Companion.URL_XLOG
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -12,7 +10,6 @@ import java.io.IOException
 
 open class RemoteLog(private val appId: String, private val debug: Boolean, private val initRequest: (Request.Builder, RequestBody) -> Unit) : ILogDataWriter {
     companion object {
-        var user: String = ""
         internal const val HEADER_CMD = "cmd"
         internal const val URL_XLOG = "https://api.leancloud.cn/1.1/classes/XLog"
     }
@@ -59,6 +56,7 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
     private fun saveLocalLog(requestInfo: RequestInfo, response: String, httpCode: Int) {
         val log = RequestLog()
         log.date = System.currentTimeMillis()
+        log.user = requestInfo.user
         log.path = requestInfo.path
         log.server = requestInfo.server
         log.method = requestInfo.method
@@ -73,7 +71,7 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
 
     @Throws(JSONException::class)
     private fun initData(obj: JSONObject, request: RequestInfo, response: String) {
-        obj.put("user", user)
+        obj.put("user", request.user)
         obj.put("appId", appId)
         if (request.headers != null) {
             obj.put("headers", request.headers)
@@ -140,7 +138,7 @@ fun OkHttpClient.Builder.initRemoteLog(context: Context, userCache: ((Request) -
         qb.post(body)
     }
     addInterceptor(LogInterceptor(logWriter))
-    if (userCache != null) addInterceptor(NetCacheInterceptor(userCache, appId, X_LC_ID, X_LC_KEY))
+//    if (userCache != null) addInterceptor(NetCacheInterceptor(userCache, appId, X_LC_ID, X_LC_KEY))
 }
 
 private fun String.isInvalidResValue(): Boolean {

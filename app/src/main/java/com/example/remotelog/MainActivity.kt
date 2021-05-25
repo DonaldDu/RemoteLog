@@ -2,13 +2,9 @@ package com.example.remotelog
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.dhy.remotelog.NetLogActivity
-import com.dhy.remotelog.RemoteLog
-import com.dhy.remotelog.initRemoteLog
-import com.dhy.remotelog.requestInfo
+import com.dhy.remotelog.host.NetLogActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -20,6 +16,7 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var api: APIs
@@ -44,21 +41,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        RemoteLog.user = "10086"
         val client = OkHttpClient.Builder()
             .apply {
-                if (BuildConfig.DEBUG) {
-                    initRemoteLog(this@MainActivity) {
-                        useBuffer.isChecked
-                    }
-                }
-                addInterceptor(object : Interceptor {
-                    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-                        val req = chain.request()
-                        Log.i("requestInfo", req.url.toString() + req.requestInfo?.params.toString())
-                        return chain.proceed(req)
-                    }
+//                if (BuildConfig.DEBUG) {
+//                    initRemoteLog(this@MainActivity) {
+//                        useBuffer.isChecked
+//                    }
+//                }
+                addInterceptor(Interceptor { chain ->
+                    val req = chain.request().newBuilder().header("_USER_", "10086").build()//fixme add user to head
+                    chain.proceed(req)
                 })
+                if (BuildConfig.DEBUG) addInterceptorWithServiceLoader()
             }.build()
 
         val retrofit = Retrofit.Builder()
@@ -68,6 +62,13 @@ class MainActivity : AppCompatActivity() {
             .client(client)
             .build()
         api = retrofit.create(APIs::class.java)
+    }
+
+    private fun OkHttpClient.Builder.addInterceptorWithServiceLoader() {
+        val iterator = ServiceLoader.load(Interceptor::class.java).iterator()
+        while (iterator.hasNext()) {
+            addInterceptor(iterator.next())
+        }
     }
 
     interface APIs {

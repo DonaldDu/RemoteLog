@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.dhy.remotelog">
 
     <application>
         <activity
-            android:name=".NetLogActivity"
-            android:label="NetLog"
-            android:screenOrientation="portrait" />
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            android:exported="false"
-            tools:node="merge">
-            <meta-data
-                android:name="com.dhy.remotelog.NetLogInitializer"
-                android:value="@string/androidx_startup" />
-        </provider>
-    </application>
+            android:name=".InstallLogAppActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
 
+        <provider
+            android:name=".RemoteLogContentProvider"
+            android:authorities="${applicationId}.RemoteLogContentProvider"
+            android:enabled="true"
+            android:exported="false" />
+    </application>
 </manifest>
