@@ -11,7 +11,12 @@ import org.json.JSONObject
 /**
  * must be add after LogInterceptor
  * */
-class NetCacheInterceptor(val userCache: (Request) -> Boolean, private val packageName: String, private val X_LC_ID: String, private val X_LC_KEY: String) : Interceptor {
+class NetCacheInterceptor(
+    val userCache: (Request) -> Boolean,
+    private val packageName: String,
+    private val X_LC_ID: String,
+    private val X_LC_KEY: String
+) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val rawReq = chain.request()
         if (userCache(rawReq)) {
@@ -20,7 +25,7 @@ class NetCacheInterceptor(val userCache: (Request) -> Boolean, private val packa
             if (where != null) {
                 val req = old.newBuilder()
                     .header(LogInterceptor.HEADER_IGNORE_LOG, LogInterceptor.HEADER_IGNORE_LOG)
-                    .url("$URL_XLOG?limit=1&where=$where")
+                    .url("$URL_XLOG?order=-updatedAt&limit=1&where=$where")
                     .loadIdKey()
                     .build()
                 val res = chain.proceed(req)
@@ -57,7 +62,6 @@ class NetCacheInterceptor(val userCache: (Request) -> Boolean, private val packa
         return if (info != null) {
             val json = JSONObject()
             json.putOpt("appId", packageName)
-            json.putOpt("path", info.path)
             json.putOpt("unique", info.unique)
             json.toString()
         } else null

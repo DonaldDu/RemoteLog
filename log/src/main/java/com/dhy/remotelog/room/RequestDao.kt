@@ -18,7 +18,7 @@ interface RequestDao {
     fun getAllByDataSource(): DataSource.Factory<Int, RequestLog>
 }
 
-@Database(entities = [RequestLog::class], version = 1)
+@Database(entities = [RequestLog::class], version = 1, exportSchema = false)
 abstract class NetLogDatabase : RoomDatabase() {
     abstract fun requestDao(): RequestDao
 }
