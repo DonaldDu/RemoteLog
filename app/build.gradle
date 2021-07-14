@@ -49,6 +49,6 @@ dependencies {
     implementation project(path: ':log')
     implementation "androidx.startup:startup-runtime:1.0.0-rc01"
 
-    debugImplementation  "io.github.didi.dokit:dokitx:$doraemonkitV"
+    debugImplementation "io.github.didi.dokit:dokitx:$doraemonkitV"
     releaseImplementation "io.github.didi.dokit:dokitx-no-op:$doraemonkitV"
 }

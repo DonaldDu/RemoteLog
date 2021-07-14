@@ -29,7 +29,8 @@ android {
     }
 }
 androidExtensions { experimental = true }
-mavenPublish("com.github.DonaldDu:${rootProject.name}:10.0.0")
+def v = android.defaultConfig.versionName
+mavenPublish("com.github.DonaldDu:${rootProject.name}:$v")
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency lower okhttp version for better compatible
