@@ -10,29 +10,30 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dhy.adapterx.IViewHolder
 import com.dhy.adapterx.PagedAdapterX
+import com.dhy.remotelog.databinding.NetLogActivityBinding
+import com.dhy.remotelog.databinding.NetLogItemLayoutBinding
 import com.dhy.remotelog.room.RequestLog
 import com.dhy.remotelog.room.getDb
 import com.dhy.xintent.formatText
 import com.dhy.xintent.toast
 import com.yuyh.jsonviewer.library.JsonRecyclerView
-import kotlinx.android.synthetic.main.net_log_activity.*
-import kotlinx.android.synthetic.main.net_log_item_layout.*
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 
 class NetLogActivity : AppCompatActivity() {
+    private val binding by lazy { NetLogActivityBinding.inflate(layoutInflater) }
     private val db by lazy { getDb(this)!! }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.net_log_activity)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        setContentView(binding.root)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         val pagedListConfig = PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(10).setInitialLoadSizeHint(20).build()
 
         val pagedList = LivePagedListBuilder(db.getAllByDataSource(), pagedListConfig).build()
 
         val pageAdapter = PagedAdapterX(this, Holder::class)
-        recyclerView.adapter = pageAdapter
+        binding.recyclerView.adapter = pageAdapter
         pagedList.observe(this) { pageAdapter.submitList(it) }
         pageAdapter.setOnItemClickListener {
             showDetail(it.data)
@@ -41,7 +42,7 @@ class NetLogActivity : AppCompatActivity() {
     }
 
     private fun initClearHistory() {
-        btClearHistory.setOnClickListener {
+        binding.btClearHistory.setOnClickListener {
             AlertDialog.Builder(this)
                 .setMessage("确定清空所有历史记录吗？")
                 .setNegativeButton("关闭", null)
@@ -79,12 +80,15 @@ class NetLogActivity : AppCompatActivity() {
             private val dateFormat = SimpleDateFormat("HH:mm:ss")
         }
 
+        private val binding by lazy { NetLogItemLayoutBinding.bind(itemView) }
         override fun update(data: RequestLog, position: Int) {
-            tvDate.text = dateFormat.format(data.date)
-            tvHttp.formatText(data.method, data.httpCode)
-            tvPath.formatText(data.path)
-            tvParams.formatText(data.params)
-            tvResponse.formatText(data.response)
+            binding.apply {
+                tvDate.text = dateFormat.format(data.date)
+                tvHttp.formatText(data.method, data.httpCode)
+                tvPath.formatText(data.path)
+                tvParams.formatText(data.params)
+                tvResponse.formatText(data.response)
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 33
 
@@ -26,9 +25,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures { viewBinding true }
 }
-androidExtensions { experimental = true }
-mavenPublish("com.github.DonaldDu:${rootProject.name}:10.0.0")
+//mavenPublish("com.github.DonaldDu:${rootProject.name}:10.0.0")
+mavenPublish("com.github.DonaldDu:${rootProject.name}:1.3.6")//publish to ZHJK nexus
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency lower okhttp version for better compatible
@@ -52,6 +52,8 @@ dependencies {
     implementation 'com.github.DonaldDu:JsonViewer:1.0.6.3'
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
 
-    implementation "androidx.startup:startup-runtime:1.0.0-rc01"
+    //noinspection GradleDependency
+    implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlin_version"
+    implementation "androidx.startup:startup-runtime:1.1.1"
     compileOnly "io.github.didi.dokit:dokitx:$doraemonkitV"
 }
