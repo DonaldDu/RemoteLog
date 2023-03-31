@@ -1,5 +1,6 @@
 package com.example.remotelog
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,8 @@ import retrofit2.http.Query
 
 class MainActivity : AppCompatActivity() {
     private lateinit var api: APIs
+
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -48,16 +51,14 @@ class MainActivity : AppCompatActivity() {
         val client = OkHttpClient.Builder()
             .apply {
                 if (BuildConfig.DEBUG) {
-                    initRemoteLog(this@MainActivity) {
+                    initRemoteLog(applicationContext) {
                         useBuffer.isChecked
                     }
                 }
-                addInterceptor(object : Interceptor {
-                    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-                        val req = chain.request()
-                        Log.i("requestInfo", req.url.toString() + req.requestInfo?.params.toString())
-                        return chain.proceed(req)
-                    }
+                addInterceptor(Interceptor { chain ->
+                    val req = chain.request()
+                    Log.i("requestInfo", req.url.toString() + req.requestInfo?.params.toString())
+                    chain.proceed(req)
                 })
             }.build()
 

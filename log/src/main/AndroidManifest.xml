@@ -6,7 +6,8 @@
     <application>
         <activity
             android:name=".NetLogActivity"
-            android:label="NetLog"
+            android:exported="true"
+            android:label="网络请求日志"
             android:screenOrientation="portrait" />
         <provider
             android:name="androidx.startup.InitializationProvider"

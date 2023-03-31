@@ -33,9 +33,23 @@ class NetLogActivity : AppCompatActivity() {
 
         val pageAdapter = PagedAdapterX(this, Holder::class)
         recyclerView.adapter = pageAdapter
-        pagedList.observe(this, { pageAdapter.submitList(it) })
+        pagedList.observe(this) { pageAdapter.submitList(it) }
         pageAdapter.setOnItemClickListener {
             showDetail(it.data)
+        }
+        initClearHistory()
+    }
+
+    private fun initClearHistory() {
+        btClearHistory.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setMessage("确定清空所有历史记录吗？")
+                .setNegativeButton("关闭", null)
+                .setPositiveButton("清空") { _, _ ->
+                    toast("已清空所有历史数据", Toast.LENGTH_LONG)
+                    db.clearAll()
+                    finish()
+                }.show()
         }
     }
 
@@ -57,11 +71,7 @@ class NetLogActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setView(v)
             .setNegativeButton("关闭", null)
-            .setPositiveButton("清空所有历史") { _, _ ->
-                toast("已清空所有历史数据", Toast.LENGTH_LONG)
-                db.clearAll()
-                finish()
-            }.show()
+            .show()
     }
 
     class Holder(v: View) : IViewHolder<RequestLog>(v, R.layout.net_log_item_layout) {

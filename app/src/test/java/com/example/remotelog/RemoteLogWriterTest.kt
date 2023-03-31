@@ -1,5 +1,6 @@
 package com.example.remotelog
 
+import android.annotation.SuppressLint
 import com.dhy.remotelog.LogInterceptor
 import com.dhy.remotelog.RemoteLog
 import io.reactivex.rxjava3.core.Single
@@ -37,6 +38,7 @@ class RemoteLogWriterTest {
         api = retrofit.create(API::class.java)
     }
 
+    @SuppressLint("CheckResult")
     @Test
     fun testLogin() {
         api!!.login("1", "0")

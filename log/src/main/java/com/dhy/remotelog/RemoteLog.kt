@@ -123,6 +123,10 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
                 body.close()
             }
         }
+        try {
+            response.close()
+        } catch (_: Exception) {
+        }
     }
 }
 
