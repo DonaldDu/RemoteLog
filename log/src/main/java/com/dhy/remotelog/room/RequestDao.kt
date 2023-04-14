@@ -1,7 +1,6 @@
 package com.dhy.remotelog.room
 
 import android.content.Context
-import androidx.paging.DataSource
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -14,8 +13,8 @@ interface RequestDao {
     @Query("DELETE FROM NetLog")
     fun clearAll()
 
-    @Query("SELECT * FROM NetLog order by id desc")
-    fun getAllByDataSource(): DataSource.Factory<Int, RequestLog>
+    @Query("SELECT * FROM NetLog order by id desc limit 100")
+    fun getLatestData(): List<RequestLog>
 }
 
 @Database(entities = [RequestLog::class], version = 1, exportSchema = false)

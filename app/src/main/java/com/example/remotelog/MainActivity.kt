@@ -36,9 +36,9 @@ class MainActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    Toast.makeText(this, "response length " + it.msg, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "response msg:" + it.msg, Toast.LENGTH_LONG).show()
                 }, {
-                    Toast.makeText(this, "response error " + it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "response error:" + it.message, Toast.LENGTH_LONG).show()
                 })
         }
         btShowLog.setOnClickListener {
@@ -50,10 +50,13 @@ class MainActivity : AppCompatActivity() {
         RemoteLog.user = "10086"
         val client = OkHttpClient.Builder()
             .apply {
-                if (BuildConfig.DEBUG) {
-                    initRemoteLog(applicationContext) {
-                        useBuffer.isChecked
+                if (BuildConfig.BUILD_TYPE == "debug") {
+                    CacheHelper.appendInfo(this)
+                    CacheHelper.userCache = useBuffer.isChecked
+                    useBuffer.setOnCheckedChangeListener { _, isChecked ->
+                        CacheHelper.userCache = isChecked
                     }
+                    initRemoteLog(applicationContext, CacheHelper())
                 }
                 addInterceptor(Interceptor { chain ->
                     val req = chain.request()

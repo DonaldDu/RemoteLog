@@ -9,7 +9,6 @@ import retrofit2.Invocation
 import retrofit2.http.*
 import java.io.IOException
 import java.nio.charset.Charset
-import java.util.*
 
 class RequestInfo(request: Request) {
     val method: String
@@ -47,7 +46,6 @@ class RequestInfo(request: Request) {
         this.query = initQuery(url)
         this.forms = initForms(request)
         this.json = initJson(request)
-        this.unique = initUnique()
         this.cmd = request.getCmd()
         this.extraLog = initIExtraLog(request)
 
@@ -64,6 +62,7 @@ class RequestInfo(request: Request) {
                 params.put("json", JSONArray(json))
             }
         }
+        this.unique = initUnique()
     }
 
     fun appendRequestKey(request: Request): Request {

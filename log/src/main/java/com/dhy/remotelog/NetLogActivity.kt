@@ -1,15 +1,13 @@
 package com.dhy.remotelog
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dhy.adapterx.AdapterX
 import com.dhy.adapterx.IViewHolder
-import com.dhy.adapterx.PagedAdapterX
 import com.dhy.remotelog.databinding.NetLogActivityBinding
 import com.dhy.remotelog.databinding.NetLogItemLayoutBinding
 import com.dhy.remotelog.room.RequestLog
@@ -20,21 +18,15 @@ import com.yuyh.jsonviewer.library.JsonRecyclerView
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 
-class NetLogActivity : AppCompatActivity() {
+class NetLogActivity : Activity() {
     private val binding by lazy { NetLogActivityBinding.inflate(layoutInflater) }
     private val db by lazy { getDb(this)!! }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-
-        val pagedListConfig = PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(10).setInitialLoadSizeHint(20).build()
-
-        val pagedList = LivePagedListBuilder(db.getAllByDataSource(), pagedListConfig).build()
-
-        val pageAdapter = PagedAdapterX(this, Holder::class)
+        val pageAdapter = AdapterX(this, Holder::class, db.getLatestData())
         binding.recyclerView.adapter = pageAdapter
-        pagedList.observe(this) { pageAdapter.submitList(it) }
         pageAdapter.setOnItemClickListener {
             showDetail(it.data)
         }

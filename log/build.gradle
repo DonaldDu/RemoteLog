@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 33
         versionCode 1
-        versionName '1.3.6'
+        versionName '1.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resValue "string", "X_LC_ID", "${findProperty('X_LC_ID')}"
@@ -28,7 +28,7 @@ android {
     buildFeatures { viewBinding true }
 }
 //mavenPublish("com.github.DonaldDu:${rootProject.name}:10.0.0")
-mavenPublish("com.github.DonaldDu:${rootProject.name}:1.3.6")//publish to ZHJK nexus
+mavenPublish("com.github.DonaldDu:${rootProject.name}:1.4.0")//publish to ZHJK nexus
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency lower okhttp version for better compatible
@@ -38,7 +38,7 @@ dependencies {
     implementation "com.github.DonaldDu:XIntent:1.7.2"
     implementation 'com.github.DonaldDu:AdapterX:2.0.7'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+//    implementation 'androidx.appcompat:appcompat:1.4.2'
 //    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
@@ -50,7 +50,7 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.4.2'
     implementation 'androidx.room:room-runtime:2.4.2'
     implementation 'com.github.DonaldDu:JsonViewer:1.0.6.3'
-    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+//    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
 
     //noinspection GradleDependency
     implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlin_version"

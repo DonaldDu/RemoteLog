@@ -130,7 +130,7 @@ open class RemoteLog(private val appId: String, private val debug: Boolean, priv
     }
 }
 
-fun OkHttpClient.Builder.initRemoteLog(context: Context, userCache: ((Request) -> Boolean)? = null) {
+fun OkHttpClient.Builder.initRemoteLog(context: Context, cacheHelper: RemoteCacheHelper? = null) {
     val appId = context.applicationInfo.packageName
     val X_LC_ID = context.getString(R.string.X_LC_ID)
     val X_LC_KEY = context.getString(R.string.X_LC_KEY)
@@ -144,7 +144,7 @@ fun OkHttpClient.Builder.initRemoteLog(context: Context, userCache: ((Request) -
         qb.post(body)
     }
     addInterceptor(LogInterceptor(logWriter))
-    if (userCache != null) addInterceptor(NetCacheInterceptor(userCache, appId, X_LC_ID, X_LC_KEY))
+    if (cacheHelper != null) addInterceptor(NetCacheInterceptor(cacheHelper, appId, X_LC_ID, X_LC_KEY))
 }
 
 private fun String.isInvalidResValue(): Boolean {
