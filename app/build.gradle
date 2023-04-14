@@ -13,16 +13,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "X_LC_ID", "\"${findProperty('X_LC_ID')}\""//for test only
         buildConfigField "String", "X_LC_KEY", "\"${findProperty('X_LC_KEY')}\""
-        multiDexEnabled true//for test only
+        multiDexEnabled true
     }
     buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
         debug {
             resValue "string", "X_LC_ID", "${findProperty('X_LC_ID')}"
             resValue "string", "X_LC_KEY", "${findProperty('X_LC_KEY')}"
+        }
+        release {
+            debuggable true
+            minifyEnabled false
+            signingConfig signingConfigs.debug//for test only
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
