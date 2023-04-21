@@ -28,7 +28,7 @@ android {
     buildFeatures { viewBinding true }
 }
 //mavenPublish("com.github.DonaldDu:${rootProject.name}:10.0.0")
-mavenPublish("com.github.DonaldDu:${rootProject.name}:1.4.0")//publish to ZHJK nexus
+mavenPublish("com.github.DonaldDu:${rootProject.name}:1.4.1")//publish to ZHJK nexus
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency lower okhttp version for better compatible
