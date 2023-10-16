@@ -53,4 +53,5 @@ dependencies {
 
     debugImplementation "io.github.didi.dokit:dokitx:$doraemonkitV"
     releaseImplementation "io.github.didi.dokit:dokitx-no-op:$doraemonkitV"
+//    compileOnly 'com.google.auto.service:auto-service:1.1.1'
 }

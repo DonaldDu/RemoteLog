@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="net_log_kit">请求日志</string>
+    <string name="net_log_X_LC_ID" translatable="false">null</string>
+    <string name="net_log_X_LC_KEY" translatable="false">null</string>
+    <string name="net_log_url" translatable="false">https://api.leancloud.cn/1.1/classes/XLog</string>
 </resources>

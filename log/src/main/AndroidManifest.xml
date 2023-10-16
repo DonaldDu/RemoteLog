@@ -6,7 +6,7 @@
     <application>
         <activity
             android:name=".NetLogActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="网络请求日志"
             android:screenOrientation="portrait" />
         <provider
@@ -19,5 +19,4 @@
                 android:value="@string/androidx_startup" />
         </provider>
     </application>
-
 </manifest>

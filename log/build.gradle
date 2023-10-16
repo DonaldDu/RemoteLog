@@ -56,4 +56,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlin_version"
     implementation "androidx.startup:startup-runtime:1.1.1"
     compileOnly "io.github.didi.dokit:dokitx:$doraemonkitV"
+//    compileOnly 'com.google.auto.service:auto-service:1.1.1'
 }
